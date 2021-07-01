@@ -302,12 +302,14 @@ public class VideoPlayer {
   public void searchVideos(String searchTerm) {
     String video_index = searchTerm.toLowerCase();
     List<Video> videos_list1 = videoLibrary.getVideos();
+    videos_list1.sort(Comparator.comparing(Video::getTitle));
     int count = 1;
     boolean flag = false;
     
     List<String> names = new ArrayList<String>();
     System.out.println("Here are the results for " + searchTerm + ":");
     for (int i = 0; i < videoLibrary.getVideos().size(); i++) {
+      
       Video video = videos_list1.get(i);
       String to_check = video.getTitle().toLowerCase();
       if (to_check.contains(video_index)) {
@@ -320,13 +322,14 @@ public class VideoPlayer {
     }
     if(flag == true) {
       System.out.println("Would you like to play any of the above? If yes, specify the number of the video.");
-      System.out.println("If your answer is not a valid number, we will assume it's a no");
+      System.out.println("If your answer is not a valid number, we will assume it's a no.");
       Scanner sc = new Scanner(System.in);
-      int user_input = sc.nextInt();
+      String user_input = sc.nextLine();
+      
       Collections.sort(names);
 
       for(int i = 1; i < count; i++){
-        if(user_input == i) {
+        if(user_input.matches("\\d+") && Integer.parseInt(user_input) == i) {
           
           System.out.println("Playing video: " + names.get(i-1));
            
@@ -339,7 +342,49 @@ public class VideoPlayer {
     }
   
   public void searchVideosWithTag(String videoTag) {
-    System.out.println("searchVideosWithTag needs implementation");
+    String video_index = videoTag.toLowerCase();
+    List<Video> videos_list1 = videoLibrary.getVideos();
+    videos_list1.sort(Comparator.comparing(Video::getTitle));
+    int count = 1;
+    boolean flag = false;
+
+    List<String> names = new ArrayList<String>();
+    System.out.println("Here are the results for " + videoTag + ":");
+    for (int i = 0; i < videoLibrary.getVideos().size(); i++) {
+
+      Video video = videos_list1.get(i);
+      for(int j = 0; j < video.getTags().size(); j++) {
+        
+        String to_check = video.getTags().get(j).toLowerCase();
+        if (to_check.equals(video_index)) {
+
+          names.add(video.getTitle());
+          System.out.println(count + ") " + getVideoString(video));
+          count++;
+          flag = true;
+        }
+      }
+    }
+    if (flag == true) {
+      System.out.println("Would you like to play any of the above? If yes, specify the number of the video.");
+      System.out.println("If your answer is not a valid number, we will assume it's a no.");
+      Scanner sc = new Scanner(System.in);
+      String user_input = sc.nextLine();
+
+      Collections.sort(names);
+
+      for (int i = 1; i < count; i++) {
+        if (user_input.matches("\\d+") && Integer.parseInt(user_input) == i) {
+
+          System.out.println("Playing video: " + names.get(i - 1));
+
+        }
+      }
+    }
+    if (flag == false) {
+      System.out.println("No search results for " + videoTag);
+    }
+    
   }
 
   public void flagVideo(String videoId) {
@@ -349,8 +394,8 @@ public class VideoPlayer {
   public void flagVideo(String videoId, String reason) {
     System.out.println("flagVideo needs implementation");
   }
-
+ 
   public void allowVideo(String videoId) {
     System.out.println("allowVideo needs implementation");
   }
-}
+} 
