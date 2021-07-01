@@ -88,8 +88,10 @@ public class Part3Test extends TestBase {
   @Test
   public void testSearchVideosNoResults() {
     videoPlayer.searchVideos("blah");
-    assertEquals(1, getOutputLines().length);
-    assertThat(outputStream.toString(), containsString("No search results for blah"));
+    var lines = getOutputLines();
+    assertEquals(2, lines.length, outputStream.toString());
+    assertThat(lines[0], containsString("Here are the results for blah:"));
+    assertThat(lines[1], containsString("No search results for blah"));
   }
 
   @Test
@@ -152,7 +154,10 @@ public class Part3Test extends TestBase {
   @Test
   public void testSearchVideosWithTagNoResults() {
     videoPlayer.searchVideosWithTag("#blah");
-    assertEquals(1, getOutputLines().length);
+
+    var lines = getOutputLines();
+    assertEquals(2, lines.length, outputStream.toString());
+    assertThat(lines[0], containsString("Here are the results for #blah:"));
     assertThat(outputStream.toString(), containsString("No search results for #blah"));
   }
 }
